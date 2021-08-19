@@ -1,10 +1,9 @@
 import torch
 import numpy as np
-from config import max_len, batch
-from make_dict import slot_dict
+from config import max_len
 
 
-def make_mask(real_len, max_len=max_len, label_size=len(slot_dict), batch=batch):
+def make_mask(real_len, label_size, batch, max_len=max_len):
     mask = torch.zeros(batch, max_len, label_size)
     for index, item in enumerate(real_len):
         mask[index, :item, :] = 1.0
@@ -21,7 +20,7 @@ def masked_log_softmax(vector: torch.Tensor, mask: torch.Tensor, dim: int = -1) 
     return torch.nn.functional.log_softmax(vector, dim=dim)
 
 
-def one_hot(array, Num=len(slot_dict), maxlen=max_len):
+def one_hot(array, Num, maxlen=max_len):
 
     shape = array.size()
     batch = shape[0]
@@ -42,7 +41,7 @@ def one_hot(array, Num=len(slot_dict), maxlen=max_len):
 
 import random
 
-def get_batch(data, batch_size=batch):
+def get_batch(data, batch_size):
     random.shuffle(data)
     sindex = 0
     eindex = batch_size
