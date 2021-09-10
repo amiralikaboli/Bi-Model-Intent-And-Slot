@@ -35,8 +35,8 @@ def train_func(args):
     for epoch in range(epoch_num):
         slot_loss_history = []
         intent_loss_history = []
-        # for batch_index, data in tqdm(enumerate(utils.get_batch(train_data, batch_size=args.batch))):
-        for batch_index, data in enumerate(utils.get_batch(train_data, batch_size=args.batch)):
+        for batch_index, data in tqdm(enumerate(utils.get_batch(train_data, batch_size=args.batch))):
+        # for batch_index, data in enumerate(utils.get_batch(train_data, batch_size=args.batch)):
 
             # Preparing data
             sentence, real_len, slot_label, intent_label = data
@@ -84,8 +84,8 @@ def train_func(args):
         TP, FP, FN = 0, 0, 0
         all_intent_label, all_intent_pred = [], []
         # for batch_index, data_test in tqdm(enumerate(utils.get_batch(test_data, batch_size=1))):
-        # for batch_index, data_test in tqdm(enumerate(utils.get_batch(test_data))):
-        for batch_index, data_test in enumerate(utils.get_batch(test_data, batch_size=args.batch)):
+        for batch_index, data_test in tqdm(enumerate(utils.get_batch(test_data, batch_size=args.batch))):
+        # for batch_index, data_test in enumerate(utils.get_batch(test_data, batch_size=args.batch)):
             sentence_test, real_len_test, slot_label_test, intent_label_test = data_test
             # print(sentence[0].shape, real_len.shape, slot_label.shape)
             x_test = torch.tensor(sentence_test).to(device)
@@ -160,15 +160,15 @@ def train_func(args):
         if F1_score > best_F1_score:
             best_F1_score = F1_score
             best_epoch_slot = epoch
-        # # print('*' * 20)
-        # print('Epoch: [{}/{}], Intent Val Acc: {:.2f} \t Slot F1 score: {:.2f}'.format(epoch + 1, epoch_num, round(100.0 * intent_acc, 2), F1_score))
-        # # print('*' * 20)
-        # print(classification_report(all_intent_label, all_intent_pred, digits=4))
+        # print('*' * 20)
+        print('Epoch: [{}/{}], Intent Val Acc: {:.2f} \t Slot F1 score: {:.2f}'.format(epoch + 1, epoch_num, round(100.0 * intent_acc, 2), F1_score))
+        # print('*' * 20)
+        print(classification_report(all_intent_label, all_intent_pred, digits=4))
         
-        # print('Best Intent Acc: {:.2f} at Epoch: [{}]'.format(round(100.0 * best_intent_acc, 2), best_epoch + 1))
-        # print('Best F1 score: {:.2f} at Epoch: [{}]'.format(best_F1_score, best_epoch_slot + 1))
-        # print("*" * 50)
-        print('Epoch {}: {}'.format(epoch + 1, round(100.0 * intent_acc, 2)))
+        print('Best Intent Acc: {:.2f} at Epoch: [{}]'.format(round(100.0 * best_intent_acc, 2), best_epoch + 1))
+        print('Best F1 score: {:.2f} at Epoch: [{}]'.format(best_F1_score, best_epoch_slot + 1))
+        print("*" * 50)
+        # print('Epoch {}: {}'.format(epoch + 1, round(100.0 * intent_acc, 2)))
 
 
 if __name__ == "__main__":
