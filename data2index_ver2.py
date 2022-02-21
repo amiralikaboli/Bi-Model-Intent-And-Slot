@@ -6,17 +6,20 @@ import config as cfg
 
 
 intent_label = "intents"
-slot_label = "slots0"
+slot_label = "slots1"
 
 def make_woz_dict(file_path):
-    words, intents, slots = set(), set(), set()
+    words, intents, slots = set(), {"general"}, set()
     with open(file_path, "r") as json_file:
         for dialogue_id, dialogue in json.load(json_file).items():
             for turn in dialogue:
+                if turn["speaker"] == 1:
+                    continue
+
                 if len(turn[intent_label]) > 1:
                     continue
-                if len(turn[intent_label]) == 0:
-                    continue
+                # if len(turn[intent_label]) == 0:
+                #     continue
 
                 real_length = len(turn["words"])
                 if real_length > cfg.max_len:
@@ -27,6 +30,8 @@ def make_woz_dict(file_path):
                 slots.update(turn[slot_label])
 
     word_dict = {'UNK': 0, 'PAD': 1}
+    if "UNK" in words:
+        words.remove("UNK")
     for i, item in enumerate(sorted(words)):
         word_dict[item] = i + 2
     intent_dict = {intent: idx for idx, intent in enumerate(sorted(intents))}
@@ -39,10 +44,13 @@ def make_woz_index(file_path):
     with open(file_path, "r") as json_file:
         for dialogue_id, dialogue in json.load(json_file).items():
             for turn in dialogue:
+                if turn["speaker"] == 1:
+                    continue
+                
                 if len(turn[intent_label]) > 1:
                     continue
-                if len(turn[intent_label]) == 0:
-                    continue
+                # if len(turn[intent_label]) == 0:
+                #     continue
 
                 real_length = len(turn["words"])
                 if real_length > cfg.max_len:
@@ -65,10 +73,10 @@ for key in slot_dict:
     index2slot_dict[slot_dict[key]] = key
 
 
-# print('Number of training samples: ', len(train_data))
-# print('Number of test samples: ', len(test_data))
-# print('Number of words: ', len(word_dict))
-# print('Number of intent labels: ', len(intent_dict))
-# print('Number of slot labels', len(slot_dict))
-# print("#" * 50)
-# print(intent_dict)
+print('Number of training samples: ', len(train_data))
+print('Number of test samples: ', len(test_data))
+print('Number of words: ', len(word_dict))
+print('Number of intent labels: ', len(intent_dict))
+print('Number of slot labels', len(slot_dict))
+print("#" * 50)
+print(intent_dict)
